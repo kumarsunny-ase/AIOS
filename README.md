@@ -32,5 +32,3 @@ Development OS: macOS
 Build System: CMake
 Version Control: Git
 Project Status
-
-Day 1 — Development environment and project initialization.
