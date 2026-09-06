@@ -1,6 +1,16 @@
+import datetime
+import json
 import random
 import time
 
+
+import paho.mqtt.client as mqtt
+
+from mqtt_config import (
+    MQTT_BROKER,
+    MQTT_PORT, 
+    VEHICLE_STATUS_TOPIC,
+)
 
 class Vehicle:
     def __init__(self):
@@ -34,6 +44,7 @@ class Vehicle:
 
     def get_state(self):
         return {
+            "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "speed_kmh": round(self.speed, 2),
             "battery_percentage": round(self.battery, 2),
             "cabin_temperature": round(self.cabin_temperature, 2),
@@ -43,28 +54,38 @@ class Vehicle:
             "longitude": round(self.longitude, 6)
         }
     
+def create_mqtt_client():
+    """
+    Creates and conncets an MQTT client instance.
+    """
+    client = mqtt.Client(
+        mqtt.CallbackAPIVersion.VERSION2
+    )
+    client.connect(MQTT_BROKER, MQTT_PORT, 60)
+    return client
+
 
 def main():
     vehicle = Vehicle()
 
+    mqtt_client = create_mqtt_client()
+
     print("AIOS Vehicle Simulator Started")
+    print("MQTT Connected")
     print("================================")
 
     while True:
         vehicle.update()
         state = vehicle.get_state()
-        print("\n--- Vehicle State ---")
-        print(f"Speed:       {state['speed_kmh']} km/h")
-        print(f"Battery:     {state['battery_percentage']} %")
-        print(f"Cabin Temp:  {state['cabin_temperature']} °C")
-        print(f"Engine:      {'ON' if state['engine_on'] else 'OFF'}")
-        print(f"Doors:       {'LOCKED' if state['doors_locked'] else 'UNLOCKED'}")
-        print(
-            f"Location:    "
-            f"{state['latitude']}, "
-            f"{state['longitude']}"
-        )
 
+        #Convert Python dictionary to JSON string
+        message = json.dumps(state)
+
+        #Publish vehicle state
+        mqtt_client.publish(VEHICLE_STATUS_TOPIC, message)
+
+        print("\n--- Vehicle State Published ---")
+        print(message)
         
         time.sleep(1)
 

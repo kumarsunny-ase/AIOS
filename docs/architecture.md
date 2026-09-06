@@ -67,3 +67,18 @@ Vehicle State Manager
 ↓
 
 Context Engine
+
+
+## Current Architecture
+
+AIOS currently uses an event-driven communication model.
+
+```text
+Vehicle Simulator
+       │
+       │ MQTT
+       ▼
+MQTT Broker
+       │
+       ▼
+Subscribers
