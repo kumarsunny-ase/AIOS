@@ -1,84 +1,21 @@
-# AIOS v0.1 Architecture
+## AIOS Core
 
-## Purpose
+The AIOS Core is implemented in C++ and acts as the central runtime for the Automotive Intelligence OS.
 
-AIOS v0.1 is the first prototype of an Automotive Intelligence Runtime.
+### Current Responsibilities
 
-The initial version does not connect to a real vehicle. Instead, a Vehicle Simulator generates real-time vehicle data.
+- Subscribe to real-time vehicle events.
+- Receive MQTT messages.
+- Parse JSON payloads.
+- Maintain the latest vehicle state.
 
-## Components
-
-### 1. Vehicle Simulator
-
-Generates simulated vehicle information:
-
-- Speed
-- Battery level
-- Cabin temperature
-- GPS location
-- Door status
-
-### 2. Communication Layer
-
-Transfers vehicle data to the AIOS Core.
-
-The initial prototype will use an event-driven messaging approach.
-
-### 3. AIOS Core
-
-Responsible for:
-
-- Receiving vehicle data
-- Validating messages
-- Maintaining the current vehicle state
-- Managing internal events
-
-### 4. Context Engine
-
-Transforms raw vehicle data into meaningful context.
-
-Example:
-
-Raw data:
-
-- Speed: 120 km/h
-- Battery: 10%
-
-Context:
-
-The vehicle is travelling at high speed while battery energy is critically low.
-
-## Initial Data Flow
-
-Vehicle Simulator
-
-↓
-
-Communication Layer
-
-↓
-
-AIOS Core
-
-↓
-
-Vehicle State Manager
-
-↓
-
-Context Engine
-
-
-## Current Architecture
-
-AIOS currently uses an event-driven communication model.
+### Current Data Flow
 
 ```text
 Vehicle Simulator
-       │
-       │ MQTT
-       ▼
+       ↓
 MQTT Broker
-       │
-       ▼
-Subscribers
+       ↓
+AIOS Core
+       ↓
+VehicleState
