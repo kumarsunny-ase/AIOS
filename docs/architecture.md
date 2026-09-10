@@ -1,21 +1,28 @@
-## AIOS Core
+## AIOS Core Architecture
 
-The AIOS Core is implemented in C++ and acts as the central runtime for the Automotive Intelligence OS.
+The AIOS Core is organized into independent components.
 
-### Current Responsibilities
+### Components
 
-- Subscribe to real-time vehicle events.
-- Receive MQTT messages.
-- Parse JSON payloads.
-- Maintain the latest vehicle state.
+- MqttClient — handles MQTT communication.
+- MessageHandler — parses incoming vehicle messages.
+- VehicleStateManager — maintains the latest vehicle state.
+- EventBus — distributes vehicle state events.
+- VehicleState — represents the current vehicle state.
 
-### Current Data Flow
+### Data Flow
 
 ```text
 Vehicle Simulator
        ↓
 MQTT Broker
        ↓
-AIOS Core
+MqttClient
+       ↓
+MessageHandler
        ↓
 VehicleState
+       ↓
+EventBus
+       ↓
+VehicleStateManager

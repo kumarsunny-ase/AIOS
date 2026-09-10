@@ -11,17 +11,33 @@ find_package(nlohmann_json REQUIRED)
 
 
 add_executable(aios_core
+
     src/main.cpp
+
     src/vehicle_state.cpp
+
+    src/vehicle_state_manager.cpp
+
+    src/message_handler.cpp
+
+    src/mqtt_client.cpp
+
+    src/event_bus.cpp
 )
 
 
-target_include_directories(aios_core PRIVATE
+target_include_directories(
+    aios_core
+    PRIVATE
     include
 )
 
 
-target_link_libraries(aios_core PRIVATE
+target_link_libraries(
+    aios_core
+    PRIVATE
+
     PahoMqttCpp::paho-mqttpp3
+
     nlohmann_json::nlohmann_json
 )
