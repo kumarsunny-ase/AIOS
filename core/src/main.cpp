@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include  "context_engine.hpp"
 #include "event_bus.hpp"
 #include "message_handler.hpp"
 #include "mqtt_client.hpp"
@@ -37,53 +38,69 @@ int main()
 
     VehicleStateManager state_manager;
 
+    ContextEngine context_engine;
+
     EventBus event_bus;
 
 
     event_bus.subscribe(
-        [&state_manager](
-            const VehicleState& state
-        )
-        {
-            state_manager.update(state);
+    [
+        &state_manager,
+        &context_engine
+    ](
+        const VehicleState& state
+    )
+    {
+        state_manager.update(state);
 
-            std::cout
-                << "\n--- AIOS Vehicle State ---\n";
 
-            std::cout
-                << "Speed: "
-                << state.speed_kmh
-                << " km/h\n";
+        VehicleContext context =
+            context_engine.evaluate(state);
 
-            std::cout
-                << "Battery: "
-                << state.battery_percent
-                << " %\n";
 
-            std::cout
-                << "Temperature: "
-                << state.cabin_temperature_c
-                << " °C\n";
+        std::cout
+            << "\n========== AIOS ==========\n";
 
-            std::cout
-                << "Engine: "
-                << (
-                    state.engine_on
-                    ? "ON"
-                    : "OFF"
-                )
-                << "\n";
+        std::cout
+            << "Speed: "
+            << state.speed_kmh
+            << " km/h\n";
 
-            std::cout
-                << "Doors: "
-                << (
-                    state.doors_locked
-                    ? "LOCKED"
-                    : "UNLOCKED"
-                )
-                << "\n";
-        }
-    );
+        std::cout
+            << "Battery: "
+            << state.battery_percent
+            << " %\n";
+
+
+        std::cout
+            << "\n--- Vehicle Context ---\n";
+
+        std::cout
+            << "Mode: "
+            << context.vehicle_mode
+            << "\n";
+
+        std::cout
+            << "Speed Level: "
+            << context.speed_level
+            << "\n";
+
+        std::cout
+            << "Energy: "
+            << context.energy_status
+            << "\n";
+
+        std::cout
+            << "Cabin: "
+            << context.cabin_condition
+            << "\n";
+
+        std::cout
+            << "Risk: "
+            << context.overall_risk
+            << "\n";
+    }
+);
 
 
     try

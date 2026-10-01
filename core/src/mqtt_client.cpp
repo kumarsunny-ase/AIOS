@@ -1,5 +1,7 @@
 #include "mqtt_client.hpp"
 
+#include <iostream>
+
 
 MqttClient::MqttClient(
     const std::string& server_address,
@@ -10,14 +12,23 @@ MqttClient::MqttClient(
         client_id
     )
 {
+    connection_options.set_clean_session(true);
 }
 
 
 void MqttClient::connect()
 {
+    std::cout
+        << "Connecting to broker..."
+        << std::endl;
+
     client.connect(
         connection_options
     )->wait();
+
+    std::cout
+        << "Connected to MQTT broker."
+        << std::endl;
 
     client.start_consuming();
 }
@@ -27,6 +38,11 @@ void MqttClient::subscribe(
     const std::string& topic
 )
 {
+    std::cout
+        << "Subscribing to: "
+        << topic
+        << std::endl;
+
     client.subscribe(
         topic,
         1
